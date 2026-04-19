@@ -52,11 +52,19 @@ pip install -r requirements.txt
 ---
 ### 🚀 Usage
 ```bash
-python main.py
-```
-```bash
+cd AI-Tutor-Personalized-Learning-System-main
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
 streamlit run dashboard.py
 ```
+
+### ☁️ Deploy to Streamlit Cloud
+1. Push the repository to GitHub.
+2. Open Streamlit Cloud and connect your GitHub repository.
+3. Set the app file to `dashboard.py`.
+4. Ensure `requirements.txt` and the `data/` folder are included in the repo.
+
 ---
 ### 🏗️ System Architecture
 

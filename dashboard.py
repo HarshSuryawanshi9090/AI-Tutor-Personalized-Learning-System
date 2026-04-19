@@ -12,13 +12,46 @@ from recommendation_engine import RecommendationEngine
 from similarity_engine import SimilarityEngine
 
 # -------------------------------
+# Cached data loading for Streamlit
+# -------------------------------
+@st.cache_data(show_spinner=False)
+def load_data():
+    return prepare_data()
+
+
+@st.cache_resource(show_spinner=False)
+def initialize_system(student_features, students, concepts, resources):
+    analyzer = PerformanceAnalyzer()
+    similarity_engine = SimilarityEngine(students)
+
+    all_concepts = concepts["concept_id"].unique()
+    similarity_engine.create_student_vectors(student_features, all_concepts)
+    similarity_engine.compute_similarity()
+
+    recommender = RecommendationEngine(
+        resources=resources,
+        concepts=concepts,
+        students=students,
+        student_features=student_features,
+        analyzer=analyzer,
+        similarity_engine=similarity_engine,
+    )
+
+    return analyzer, similarity_engine, recommender
+
+
+# -------------------------------
 # Load all data
 # -------------------------------
-student_features, performance_data, resources, concepts, students = prepare_data()
+student_features, performance_data, resources, concepts, students = load_data()
 
 # Merge concept names into student_features for charts and recommendations
 student_features = student_features.merge(
     concepts[["concept_id", "concept_name"]], on="concept_id", how="left"
+)
+
+analyzer, similarity_engine, recommender = initialize_system(
+    student_features, students, concepts, resources
 )
 
 
